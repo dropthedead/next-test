@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import UserPageContent from '../components/userpagecontents';
 import Loading from '../loading';
 interface UserData {
