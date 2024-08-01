@@ -14,15 +14,21 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import Link from 'next/link';
+import { useSelector } from 'react-redux';
+import { RootState, store } from './lib/store';
+import wrapper from 'next-redux-wrapper';
 
 const pages = {
-	'Start Page': '/',
+	'Start Page': '/startpage',
 	'Main Page': '/mainpage',
 	Users: '/users',
 };
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function Header() {
+	const formData = useSelector((state: RootState) => state.form?.formData);
+
+	console.log(JSON.stringify(formData, null, 2));
 	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
 		null
 	);
@@ -54,11 +60,11 @@ function Header() {
 						variant="h6"
 						noWrap
 						component="a"
-						href="#app-bar-with-responsive-menu"
+						href="/"
 						sx={{
 							mr: 2,
 							display: { xs: 'none', md: 'flex' },
-							fontFamily: 'monospace',
+							fontFamily: 'Monospace',
 							fontWeight: 700,
 							letterSpacing: '.3rem',
 							color: 'inherit',
@@ -106,17 +112,18 @@ function Header() {
 							))}
 						</Menu>
 					</Box>
+
 					<AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
 					<Typography
 						variant="h5"
 						noWrap
 						component="a"
-						href="#app-bar-with-responsive-menu"
+						href="/"
 						sx={{
 							mr: 2,
 							display: { xs: 'flex', md: 'none' },
 							flexGrow: 1,
-							fontFamily: 'monospace',
+							fontFamily: 'onospace',
 							fontWeight: 700,
 							letterSpacing: '.3rem',
 							color: 'inherit',
@@ -136,6 +143,9 @@ function Header() {
 								</Button>
 							</Link>
 						))}
+						<Typography noWrap maxWidth={200} textOverflow="ellipsis">
+							{formData.name}
+						</Typography>
 					</Box>
 
 					<Box sx={{ flexGrow: 0 }}>
@@ -175,4 +185,18 @@ function Header() {
 		</AppBar>
 	);
 }
-export default Header;
+
+export const getServerSideProps = wrapper.getServerSideProps(
+	store,
+	async ({ req, res }) => {
+		const state = store.getState();
+		const formData = state.form?.formData;
+		return {
+			props: {
+				formData,
+			},
+		};
+	}
+);
+
+export default wrapper.withRedux(store)(Header);

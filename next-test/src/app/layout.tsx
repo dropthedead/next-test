@@ -1,9 +1,8 @@
-import type { Metadata } from 'next';
+import type { GetStaticProps, Metadata } from 'next';
 import { Montserrat } from 'next/font/google';
 import './globals.css';
 import Header from './header';
-import ThemeProvider from '@mui/material/styles/ThemeProvider';
-import { createTheme } from '@mui/material';
+import StoreProvider from './StoreProvider';
 import ThemeClient from '@/themeProvider';
 
 const inter = Montserrat({ subsets: ['latin'] });
@@ -20,12 +19,14 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<ThemeClient>
-				<body className={inter.className}>
-					<Header />
-					{children}
-				</body>
-			</ThemeClient>
+			<StoreProvider>
+				<ThemeClient>
+					<body className={inter.className}>
+						<Header />
+						{children}
+					</body>
+				</ThemeClient>
+			</StoreProvider>
 		</html>
 	);
 }
