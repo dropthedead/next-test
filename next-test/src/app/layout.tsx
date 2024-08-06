@@ -25,7 +25,7 @@ export default async function RootLayout({
 		<html lang={locale}>
 			<StoreProvider>
 				<ThemeClient>
-					<NextIntlClientProvider messages={messages}>
+					<NextIntlClientProvider messages={messages} locale={locale}>
 						<body className={inter.className}>
 							<Header />
 							{children}

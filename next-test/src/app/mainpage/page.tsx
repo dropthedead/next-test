@@ -1,15 +1,16 @@
 'use server';
 import Link from 'next/link';
 import styles from './mainpage.module.scss';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 
 export default async function MainPage() {
-	// const t = useTranslations('HomePage');
+	const t = await getTranslations('MainPage');
+
 	return (
 		<>
 			<header>
 				<Link className={styles.link} href="/">
-					{/* {t('title')} */}
+					{t('title')}
 				</Link>
 			</header>
 
