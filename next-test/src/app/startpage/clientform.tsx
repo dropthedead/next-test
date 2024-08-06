@@ -28,6 +28,11 @@ const ClientForm: React.FC<ClientFormProps> = () => {
 
 	const handleSubmit = (values: any) => {
 		dispatch(setFormData(values));
+		const data = {
+			email: values.email,
+			name: values.name,
+		};
+		localStorage.setItem('userData', JSON.stringify(data));
 	};
 
 	return (

@@ -1,5 +1,8 @@
 'use client';
 import * as React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from './lib/store';
+import { setFormData, clearFormData } from './lib/formSlice';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -14,9 +17,6 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import Link from 'next/link';
-import { useSelector } from 'react-redux';
-import { RootState, store } from './lib/store';
-import wrapper from 'next-redux-wrapper';
 
 const pages = {
 	'Start Page': '/startpage',
@@ -26,15 +26,38 @@ const pages = {
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function Header() {
-	const formData = useSelector((state: RootState) => state.form?.formData);
+	const formData = useSelector((state: RootState) => state.form.formData);
+	const dispatch = useDispatch();
 
-	console.log(JSON.stringify(formData, null, 2));
+	React.useEffect(() => {
+		const storedData = localStorage.getItem('userData');
+		if (storedData) {
+			dispatch(setFormData(JSON.parse(storedData)));
+		}
+	}, [dispatch]);
+
 	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
 		null
 	);
 	const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
 		null
 	);
+	const [showEmailTooltip, setShowEmailTooltip] = React.useState(false);
+	const [showNameTooltip, setShowNameTooltip] = React.useState(false);
+
+	const emailRef = React.useRef<HTMLSpanElement>(null);
+	const nameRef = React.useRef<HTMLSpanElement>(null);
+
+	React.useEffect(() => {
+		if (emailRef.current && nameRef.current) {
+			setShowEmailTooltip(
+				emailRef.current.scrollWidth > emailRef.current.clientWidth
+			);
+			setShowNameTooltip(
+				nameRef.current.scrollWidth > nameRef.current.clientWidth
+			);
+		}
+	}, [formData]);
 
 	const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorElNav(event.currentTarget);
@@ -49,6 +72,12 @@ function Header() {
 
 	const handleCloseUserMenu = () => {
 		setAnchorElUser(null);
+	};
+
+	const handleLogout = () => {
+		localStorage.removeItem('userData');
+		dispatch(clearFormData());
+		handleCloseUserMenu();
 	};
 
 	return (
@@ -123,7 +152,7 @@ function Header() {
 							mr: 2,
 							display: { xs: 'flex', md: 'none' },
 							flexGrow: 1,
-							fontFamily: 'onospace',
+							fontFamily: 'Monospace',
 							fontWeight: 700,
 							letterSpacing: '.3rem',
 							color: 'inherit',
@@ -143,9 +172,60 @@ function Header() {
 								</Button>
 							</Link>
 						))}
-						<Typography noWrap maxWidth={200} textOverflow="ellipsis">
-							{formData.name}
-						</Typography>
+						<Box
+							sx={{
+								display: 'flex',
+								alignItems: 'center',
+								gap: '10px',
+							}}
+						>
+							{formData && formData.email ? (
+								showEmailTooltip ? (
+									<Tooltip title={formData.email}>
+										<Typography
+											ref={emailRef}
+											noWrap
+											maxWidth={100}
+											style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+										>
+											{formData.email}
+										</Typography>
+									</Tooltip>
+								) : (
+									<Typography
+										ref={emailRef}
+										noWrap
+										maxWidth={100}
+										style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+									>
+										{formData.email}
+									</Typography>
+								)
+							) : null}
+							{formData && formData.name ? (
+								showNameTooltip ? (
+									<Tooltip title={formData.name}>
+										<Typography
+											ref={nameRef}
+											noWrap
+											maxWidth={100}
+											style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+										>
+											{formData.name}
+										</Typography>
+									</Tooltip>
+								) : (
+									<Typography
+										ref={nameRef}
+										noWrap
+										maxWidth={100}
+										style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+									>
+										{formData.name}
+									</Typography>
+								)
+							) : null}
+						</Box>
 					</Box>
 
 					<Box sx={{ flexGrow: 0 }}>
@@ -174,7 +254,12 @@ function Header() {
 							onClose={handleCloseUserMenu}
 						>
 							{settings.map((setting) => (
-								<MenuItem key={setting} onClick={handleCloseUserMenu}>
+								<MenuItem
+									key={setting}
+									onClick={
+										setting === 'Logout' ? handleLogout : handleCloseUserMenu
+									}
+								>
 									<Typography textAlign="center">{setting}</Typography>
 								</MenuItem>
 							))}
@@ -186,17 +271,4 @@ function Header() {
 	);
 }
 
-export const getServerSideProps = wrapper.getServerSideProps(
-	store,
-	async ({ req, res }) => {
-		const state = store.getState();
-		const formData = state.form?.formData;
-		return {
-			props: {
-				formData,
-			},
-		};
-	}
-);
-
-export default wrapper.withRedux(store)(Header);
+export default Header;
