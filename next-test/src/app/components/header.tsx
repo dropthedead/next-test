@@ -1,8 +1,8 @@
 'use client';
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from './lib/store';
-import { setFormData, clearFormData } from './lib/formSlice';
+import { RootState } from '../lib/store';
+import { setFormData, clearFormData } from '../lib/formSlice';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';

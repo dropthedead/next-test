@@ -4,7 +4,7 @@ import { Formik, ErrorMessage, Field, Form } from 'formik';
 import * as yup from 'yup';
 import { TextField, Button, CircularProgress } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { setFormData } from '../lib/formSlice';
+import { setFormData } from '../../lib/formSlice';
 
 const schema = yup.object().shape({
 	name: yup.string().required('Имя обязательно'),

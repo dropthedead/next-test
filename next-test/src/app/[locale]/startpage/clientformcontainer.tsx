@@ -2,7 +2,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import ClientForm from './clientform';
-import { setFormData } from '../lib/formSlice';
+import { setFormData } from '../../lib/formSlice';
 const ClientFormContainer = () => {
 	const dispatch = useDispatch();
 
