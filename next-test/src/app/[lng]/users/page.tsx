@@ -18,7 +18,6 @@ export default async function Users() {
 					</Link>
 				</div>
 			))}
-			<div></div>
 		</div>
 	);
 }
