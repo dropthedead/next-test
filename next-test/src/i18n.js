@@ -5,10 +5,9 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 const options = {
 	order: [
 		'cookie',
+		'cookie',
 		'navigator',
-		'htmlTag',
 		'querystring',
-
 		'localStorage',
 		'sessionStorage',
 		'path',
