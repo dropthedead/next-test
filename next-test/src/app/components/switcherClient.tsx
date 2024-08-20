@@ -18,7 +18,6 @@ function SwitcherClient({ lng }: lngProps) {
 		async function fetchTranslations() {
 			const { t } = await useTranslation(lng, 'appbar');
 			setT(t);
-			console.log(t);
 		}
 		fetchTranslations();
 	}, [lng]);
